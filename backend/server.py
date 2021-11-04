@@ -1,10 +1,10 @@
 from gevent import monkey; monkey.patch_all()
 from flask import (Flask, send_from_directory, Response)
 from time import sleep
-from camera import Camera
+from nerfblaster import NerfBlaster
 
 app = Flask(__name__)
-camera = Camera()
+nerfBlaster = NerfBlaster()
 
 @app.route('/<path:path>', methods=['GET'])
 def static_proxy(path):
@@ -15,9 +15,19 @@ def static_proxy(path):
 def root():
   return send_from_directory('./static', './index.html')
 
+@app.route("/api/led_on", methods = ['POST'])
+def led_on():
+  nerfBlaster.turn_on_led()
+  return 'ok', 200
+
+@app.route("/api/led_off", methods = ['POST'])
+def led_off():
+  nerfBlaster.turn_off_led()
+  return 'ok', 200
+
 @app.route("/api/image", methods = ['GET'])
 def get_image():
-  return camera.get_image(), 200, {'Content-Type': 'image/jpeg' }
+  return nerfBlaster.get_image(), 200, {'Content-Type': 'image/jpeg' }
 
 @app.route("/api/video", methods = ['GET'])
 def car_get_video():
@@ -25,7 +35,7 @@ def car_get_video():
   def gen():
     while True:
         yield (b'--frame\r\n' 
-               b'Content-Type: image/jpeg\r\n\r\n' + camera.get_image() + b'\r\n')
+               b'Content-Type: image/jpeg\r\n\r\n' + nerfBlaster.get_image() + b'\r\n')
         sleep(0) # Give other requests a chance to process
   return Response(gen(), mimetype='multipart/x-mixed-replace; boundary=frame')
 

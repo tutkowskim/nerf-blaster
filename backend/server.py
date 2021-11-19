@@ -1,5 +1,5 @@
 from gevent import monkey; monkey.patch_all()
-from flask import (Flask, send_from_directory, Response)
+from flask import (Flask, send_from_directory, Response, request)
 from time import sleep
 from nerfblaster import NerfBlaster
 
@@ -15,14 +15,14 @@ def static_proxy(path):
 def root():
   return send_from_directory('./static', './index.html')
 
-@app.route("/api/led_on", methods = ['POST'])
-def led_on():
-  nerfBlaster.turn_on_led()
+@app.route("/api/set_horizontal_angle", methods = ['POST'])
+def set_horizontal_angle():
+  nerfBlaster.set_horizontal_angle(float(request.data))
   return 'ok', 200
 
-@app.route("/api/led_off", methods = ['POST'])
-def led_off():
-  nerfBlaster.turn_off_led()
+@app.route("/api/set_vertical_angle", methods = ['POST'])
+def set_vertical_angle():
+  nerfBlaster.set_vertical_angle(float(request.data))
   return 'ok', 200
 
 @app.route("/api/image", methods = ['GET'])

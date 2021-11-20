@@ -17,13 +17,13 @@ def root():
 
 @app.route("/api/set_horizontal_angle", methods = ['POST'])
 def set_horizontal_angle():
-  nerfBlaster.set_horizontal_angle(float(request.data))
-  return 'ok', 200
+  angle = nerfBlaster.set_horizontal_angle(float(request.data))
+  return str(angle), 200
 
 @app.route("/api/set_vertical_angle", methods = ['POST'])
 def set_vertical_angle():
-  nerfBlaster.set_vertical_angle(float(request.data))
-  return 'ok', 200
+  angle = nerfBlaster.set_vertical_angle(float(request.data))
+  return str(angle), 200
 
 @app.route("/api/image", methods = ['GET'])
 def get_image():
@@ -31,7 +31,6 @@ def get_image():
 
 @app.route("/api/video", methods = ['GET'])
 def car_get_video():
-  # Inspired to use multipart messages for streaming by https://blog.miguelgrinberg.com/post/video-streaming-with-flask
   def gen():
     while True:
         yield (b'--frame\r\n' 

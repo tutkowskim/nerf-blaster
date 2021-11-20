@@ -10,3 +10,8 @@
 ## Running the application
 1. Build the frontend application with the command `cd frontend; npm run build; cd ..;`
 2. Run the backend application with the command `cd backend; python3 server.py;`
+
+
+# Report notes
+1. Video steam inspired by: https://blog.miguelgrinberg.com/post/video-streaming-with-flask
+1. Servo control tutorial: https://tutorials-raspberrypi.com/raspberry-pi-servo-motor-control/

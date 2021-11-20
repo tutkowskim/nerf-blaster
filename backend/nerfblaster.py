@@ -37,4 +37,3 @@ class NerfBlaster:
   
   def get_image(self):
     return self.__camera.get_image()
-    

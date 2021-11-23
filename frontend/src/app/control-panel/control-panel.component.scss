@@ -1,0 +1,18 @@
+.control-panel {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+}
+
+.status-text {
+  margin: 0px;
+  width: 62px;
+  text-align: center;
+}
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

@@ -1,11 +1,12 @@
 <mat-toolbar color="primary">
   <span>Nerf Blaster</span>
   <span class="spacer"></span>
-  <button mat-icon-button aria-label="menu icon">
+  <button mat-icon-button aria-label="menu icon" [matMenuTriggerFor]="menu">
     <mat-icon>menu</mat-icon>
   </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="openHomePage()">Home</button>
+    <button mat-menu-item (click)="openDebugPage()">Debug</button>
+  </mat-menu>
 </mat-toolbar>
-<div>
-  <app-video-feed></app-video-feed>
-  <app-joystick></app-joystick>
-</div>
+<router-outlet></router-outlet>

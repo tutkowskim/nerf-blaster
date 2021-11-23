@@ -26,7 +26,7 @@ class NerfBlaster:
     self.vertical_servo_pwm.start(convert_angle_to_duty_cycle(0))
 
   def set_horizontal_angle(self, angle):
-    angle = min(max(-90, angle), 90)
+    angle = min(max(-45, angle), 45)
     self.horizontal_servo_pwm.ChangeDutyCycle(convert_angle_to_duty_cycle(angle))
     return angle
 

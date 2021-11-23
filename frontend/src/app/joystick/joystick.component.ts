@@ -23,14 +23,15 @@ export class JoystickComponent implements AfterViewInit, OnDestroy {
     }
 
     const manager = create(joystickManagerOptions);
-    manager.on('start', (_evt, data) => {
+    const joystick: Joystick = manager.get(0);
+    joystick.on('start', () => {
       this.intervalId = setInterval(() => {
-        const position = manager.get(data.identifier)?.frontPosition;
+        const position = joystick.frontPosition;
         if (position) this.handleDrag(position);
       }, 100);
     })
 
-    manager.on('end', () => {
+    joystick.on('end', () => {
       if (this.intervalId) {
         clearInterval(this.intervalId)
         this.intervalId = null;

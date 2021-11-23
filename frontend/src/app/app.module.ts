@@ -4,11 +4,13 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { JoystickComponent } from './joystick/joystick.component';
+import { VideoFeedComponent } from './video-feed/video-feed.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    JoystickComponent
+    JoystickComponent,
+    VideoFeedComponent
   ],
   imports: [
     BrowserModule,

@@ -1,5 +1,5 @@
 from gevent import monkey; monkey.patch_all()
-from flask import (Flask, send_from_directory, Response, request)
+from flask import (Flask, stream_with_context, send_from_directory, Response, request)
 from time import sleep
 from nerfblaster import NerfBlaster
 
@@ -10,8 +10,9 @@ nerfBlaster = NerfBlaster()
 def static_proxy(path):
   return send_from_directory('./static', path)
 
-
 @app.route('/')
+@app.route('/home')
+@app.route('/debug')
 def root():
   return send_from_directory('./static', './index.html')
 
@@ -31,11 +32,12 @@ def get_image():
 
 @app.route("/api/video", methods = ['GET'])
 def car_get_video():
+  @stream_with_context
   def gen():
     while True:
-        yield (b'--frame\r\n' 
-               b'Content-Type: image/jpeg\r\n\r\n' + nerfBlaster.get_image() + b'\r\n')
-        sleep(0) # Give other requests a chance to process
+      yield (b'--frame\r\n' 
+              b'Content-Type: image/jpeg\r\n\r\n' + nerfBlaster.get_image() + b'\r\n')
+      sleep(0.1) # Give other requests a chance to process
   return Response(gen(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.errorhandler(500)

@@ -1,12 +1,32 @@
-from io import BytesIO
-from picamera import PiCamera
+import cv2
+from tensorflow_example.object_detector import ObjectDetector, ObjectDetectorOptions
+from tensorflow_example.utils import visualize
 
-class Camera:
+model = 'tensorflow_example/efficientdet_lite0_edgetpu.tflite'
+
+class Camera():
   def __init__(self):
-    self.__camera = PiCamera(resolution=(640, 480), framerate=10)
-    self.__camera.start_preview()
+    self.image = None
+    self.cap = cv2.VideoCapture(0)
+    self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+    self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+
+    options = ObjectDetectorOptions(
+      num_threads=3,
+      score_threshold=0.3,
+      max_results=3,
+      enable_edgetpu=True)
+    self.detector = ObjectDetector(model_path=model, options=options)
+
+  def __del__(self):
+    self.cap.release()
 
   def get_image(self):
-    stream = BytesIO()
-    self.__camera.capture(stream, format='jpeg', use_video_port=True)
-    return stream.getvalue()
+    success, image = self.cap.read()
+    image = cv2.rotate(image, cv2.ROTATE_180)
+    image = cv2.flip(image, 1)
+    detections = self.detector.detect(image)
+    image = visualize(image, detections)
+    success, im_buf_arr = cv2.imencode(".jpg", image)
+    self.image = im_buf_arr.tobytes()
+    return self.image

@@ -15,6 +15,7 @@ class Camera():
       num_threads=3,
       score_threshold=0.3,
       max_results=3,
+      label_allow_list=['person'],
       enable_edgetpu=True)
     self.detector = ObjectDetector(model_path=model, options=options)
 

@@ -1,4 +1,3 @@
-from gevent import monkey; monkey.patch_all()
 from flask import (Flask, stream_with_context, send_from_directory, Response, request)
 from time import sleep
 from nerfblaster import NerfBlaster

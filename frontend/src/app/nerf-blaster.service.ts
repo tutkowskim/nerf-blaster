@@ -27,4 +27,8 @@ export class NerfBlasterService {
   public setVerticalAngle(value: number): void {
     firstValueFrom(this.http.post<number>('/api/set_vertical_angle', value)).then((value) => this._verticalAngle = value);
   }
+
+  public fire(): void {
+    firstValueFrom(this.http.post<number>('/api/fire', {})).then(() => {});
+  }
 }

@@ -25,6 +25,11 @@ def set_vertical_angle():
   angle = nerfBlaster.set_vertical_angle(float(request.data))
   return str(angle), 200
 
+@app.route("/api/fire", methods = ['POST'])
+def fire_request():
+  nerfBlaster.fire()
+  return 'fire requested', 200
+
 @app.route("/api/image", methods = ['GET'])
 def get_image():
   return nerfBlaster.get_image(), 200, {'Content-Type': 'image/jpeg' }
@@ -36,7 +41,7 @@ def car_get_video():
     while True:
       yield (b'--frame\r\n' 
               b'Content-Type: image/jpeg\r\n\r\n' + nerfBlaster.get_image() + b'\r\n')
-      sleep(0.1) # Give other requests a chance to process
+      sleep(0.05) # Give other requests a chance to process
   return Response(gen(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.errorhandler(500)

@@ -1,5 +1,6 @@
 import cv2
 import threading
+import time
 from tensorflow_example.object_detector import ObjectDetector, ObjectDetectorOptions
 from tensorflow_example.utils import visualize
 
@@ -8,6 +9,7 @@ model = 'tensorflow_example/efficientdet_lite0_edgetpu.tflite'
 class Camera():
   def __init__(self):
     self.image = None
+    self.fps = -1
     self.cap = cv2.VideoCapture(0)
     self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
@@ -26,6 +28,8 @@ class Camera():
 
   def update(self):
     while True:
+      start_time = time.time()
+
       success, image = self.cap.read()
       image = cv2.rotate(image, cv2.ROTATE_180)
       image = cv2.flip(image, 1)
@@ -33,6 +37,9 @@ class Camera():
       image = visualize(image, detections)
       success, im_buf_arr = cv2.imencode(".jpg", image)
       self.image = im_buf_arr.tobytes()
+      
+      end_time = time.time()
+      self.fps = 1 / (end_time - start_time)
 
   def get_image(self):
       return self.image

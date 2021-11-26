@@ -21,21 +21,24 @@ def convert_angle_to_duty_cycle(angle):
 
 class NerfBlaster:
   def __init__(self):
-    self.__camera = Camera()
+    self.camera = Camera()
     GPIO.setmode(GPIO.BCM)
     
     # horizontal servo
     GPIO.setup(horizontal_servo_pin, GPIO.OUT)
     self.horizontal_servo_pwm = GPIO.PWM(horizontal_servo_pin, 50)
     self.horizontal_servo_pwm.start(convert_angle_to_duty_cycle(0))
+    self.horizontal_angle = 0 
 
     # vertical servo
     GPIO.setup(vertical_servo_pin, GPIO.OUT)
     self.vertical_servo_pwm = GPIO.PWM(vertical_servo_pin, 50)
     self.vertical_servo_pwm.start(convert_angle_to_duty_cycle(0))
+    self.vertical_angle = 0 
 
     # fire controller
     self.__fire_requested = False
+    self.fire_controller_status = ''
     GPIO.setup(laInput1Pin, GPIO.OUT)
     GPIO.setup(laInput2Pin, GPIO.OUT)
     threading.Thread(target=self.__fire_controler, args=()).start()
@@ -49,9 +52,6 @@ class NerfBlaster:
     angle = min(max(-25, angle), 20)
     self.vertical_servo_pwm.ChangeDutyCycle(convert_angle_to_duty_cycle(angle))
     return angle
-  
-  def get_image(self):
-    return self.__camera.get_image()
 
   def set_linear_acuator_direction(self, direction):
     if direction is LinearAcuatorDirection.FORWARD:
@@ -69,22 +69,22 @@ class NerfBlaster:
 
   def __fire_controler(self):
     while True:
-      print("Reloading 1")
+      self.fire_controller_status = 'Reloading 1'
       self.set_linear_acuator_direction(LinearAcuatorDirection.BACKWARD)
       time.sleep(6)
       self.set_linear_acuator_direction(LinearAcuatorDirection.STOPPED)
       time.sleep(0.25)
       
-      print("Reloading 2")
+      self.fire_controller_status = 'Reloading 2'
       self.set_linear_acuator_direction(LinearAcuatorDirection.FORWARD)
       time.sleep(4)
       self.set_linear_acuator_direction(LinearAcuatorDirection.STOPPED)
       self.__fire_requested = False
 
-      print("Ready")
+      self.fire_controller_status = 'Ready'
       while not self.__fire_requested:
         pass
 
-      print("Firing")
+      self.fire_controller_status = 'Firing'
       self.set_linear_acuator_direction(LinearAcuatorDirection.FORWARD)
       time.sleep(3)

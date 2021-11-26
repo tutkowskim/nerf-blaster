@@ -9,10 +9,15 @@ model = 'tensorflow_example/efficientdet_lite0_edgetpu.tflite'
 class Camera():
   def __init__(self):
     self.image = None
+    self.detections = []
     self.fps = -1
+    self.FRAME_WIDTH = 640
+    self.FRAME_HEIGHT = 480
+    self.last_updated = time.time()
+    
     self.cap = cv2.VideoCapture(0)
-    self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-    self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+    self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.FRAME_WIDTH)
+    self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.FRAME_HEIGHT)
   
     options = ObjectDetectorOptions(
       num_threads=3,
@@ -33,13 +38,11 @@ class Camera():
       success, image = self.cap.read()
       image = cv2.rotate(image, cv2.ROTATE_180)
       image = cv2.flip(image, 1)
-      detections = self.detector.detect(image)
-      image = visualize(image, detections)
+      self.detections = self.detector.detect(image)
+      image = visualize(image, self.detections)
       success, im_buf_arr = cv2.imencode(".jpg", image)
       self.image = im_buf_arr.tobytes()
       
       end_time = time.time()
       self.fps = 1 / (end_time - start_time)
-
-  def get_image(self):
-      return self.image
+      self.last_updated = end_time

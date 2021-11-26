@@ -32,7 +32,7 @@ def fire_request():
 
 @app.route("/api/image", methods = ['GET'])
 def get_image():
-  return nerfBlaster.camera.get_image(), 200, {'Content-Type': 'image/jpeg' }
+  return nerfBlaster.camera.image, 200, {'Content-Type': 'image/jpeg' }
 
 @app.route("/api/video", methods = ['GET'])
 def get_video():
@@ -40,7 +40,7 @@ def get_video():
   def gen():
     while True:
       yield (b'--frame\r\n' 
-              b'Content-Type: image/jpeg\r\n\r\n' + nerfBlaster.camera.get_image() + b'\r\n')
+              b'Content-Type: image/jpeg\r\n\r\n' + nerfBlaster.camera.image + b'\r\n')
       sleep(0.05) # Give other requests a chance to process
   return Response(gen(), mimetype='multipart/x-mixed-replace; boundary=frame')
 

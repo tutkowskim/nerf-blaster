@@ -1,6 +1,5 @@
-import { Component, ElementRef, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, ElementRef, AfterViewInit, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { create, Joystick, JoystickManagerOptions, Position } from 'nipplejs';
-import { NerfBlasterService } from '../nerf-blaster.service';
 
 @Component({
   selector: 'app-joystick',
@@ -10,9 +9,13 @@ import { NerfBlasterService } from '../nerf-blaster.service';
 export class JoystickComponent implements AfterViewInit, OnDestroy {
   @ViewChild('joystickContainer')
   public joystickContainer: ElementRef<HTMLInputElement> | null = null;
-  private intervalId: any = null;
+  
+  @Output() public onDraggedUp = new EventEmitter<void>();
+  @Output() public onDraggedDown = new EventEmitter<void>();
+  @Output() public onDraggedLeft = new EventEmitter<void>();
+  @Output() public onDraggedRight = new EventEmitter<void>();
 
-  constructor(private nerfBlasterService: NerfBlasterService) {}
+  private intervalId: any = null;
 
   public ngAfterViewInit(): void {
     const joystickManagerOptions: JoystickManagerOptions = {
@@ -48,15 +51,15 @@ export class JoystickComponent implements AfterViewInit, OnDestroy {
   public handleDrag(position: Position): void {
     const threshold = 20;
     if (position.x > threshold) {
-      this.nerfBlasterService.setHorizontalAngle(this.nerfBlasterService.horizontalAngle + 5);
+      this.onDraggedRight.emit();
     } else if (position.x < threshold * -1) {
-      this.nerfBlasterService.setHorizontalAngle(this.nerfBlasterService.horizontalAngle - 5);
+      this.onDraggedLeft.emit();
     }
 
     if (position.y > threshold) {
-      this.nerfBlasterService.setVerticalAngle(this.nerfBlasterService.verticalAngle + 5);
+      this.onDraggedUp.emit();
     } else if (position.y < threshold * -1) {
-      this.nerfBlasterService.setVerticalAngle(this.nerfBlasterService.verticalAngle - 5);
+      this.onDraggedDown.emit();
     }
   }
 }

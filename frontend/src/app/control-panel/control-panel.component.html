@@ -1,6 +1,11 @@
 <div class="control-panel">
   <p class="status-text">Ready</p>
-  <app-joystick></app-joystick>
+  <app-joystick 
+    (onDraggedUp)="onDraggedUp()"
+    (onDraggedDown)="onDraggedDown()"
+    (onDraggedLeft)="onDraggedLeft()"
+    (onDraggedRight)="onDraggedRight()">
+  </app-joystick>
   <div class="action-buttons">
     <button mat-raised-button aria-label="Track" color="accent">Track</button>
     <button mat-raised-button aria-label="Fire" color="primary" (click)="fire()">Fire</button>

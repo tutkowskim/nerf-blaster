@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NerfBlasterService } from '../nerf-blaster.service';
 
 @Component({
@@ -6,13 +6,26 @@ import { NerfBlasterService } from '../nerf-blaster.service';
   templateUrl: './control-panel.component.html',
   styleUrls: ['./control-panel.component.scss']
 })
-export class ControlPanelComponent implements OnInit {
+export class ControlPanelComponent {
   constructor(private nerfBlasterService: NerfBlasterService) { }
-
-  ngOnInit(): void {
-  }
 
   public fire(): void {
     this.nerfBlasterService.fire();
+  }
+
+  public onDraggedUp(): void {
+    this.nerfBlasterService.setVerticalAngle(this.nerfBlasterService.verticalAngle + 5);
+  }
+  
+  public onDraggedDown(): void {
+    this.nerfBlasterService.setVerticalAngle(this.nerfBlasterService.verticalAngle - 5);
+  }
+  
+  public onDraggedLeft(): void {    
+    this.nerfBlasterService.setHorizontalAngle(this.nerfBlasterService.horizontalAngle - 5);
+  }
+
+  public onDraggedRight(): void {
+    this.nerfBlasterService.setHorizontalAngle(this.nerfBlasterService.horizontalAngle + 5);
   }
 }

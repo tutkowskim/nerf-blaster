@@ -28,12 +28,16 @@ class NerfBlaster:
     GPIO.setup(horizontal_servo_pin, GPIO.OUT)
     self.horizontal_servo_pwm = GPIO.PWM(horizontal_servo_pin, 50)
     self.horizontal_servo_pwm.start(convert_angle_to_duty_cycle(0))
+    time.sleep(0.05)
+    self.horizontal_servo_pwm.ChangeDutyCycle(0)
     self.horizontal_angle = 0 
 
     # vertical servo
     GPIO.setup(vertical_servo_pin, GPIO.OUT)
     self.vertical_servo_pwm = GPIO.PWM(vertical_servo_pin, 50)
     self.vertical_servo_pwm.start(convert_angle_to_duty_cycle(0))
+    time.sleep(0.05)
+    self.vertical_servo_pwm.ChangeDutyCycle(0)
     self.vertical_angle = 0 
 
     # fire controller
@@ -46,11 +50,15 @@ class NerfBlaster:
   def set_horizontal_angle(self, angle):
     angle = min(max(-45, angle), 45)
     self.horizontal_servo_pwm.ChangeDutyCycle(convert_angle_to_duty_cycle(angle))
+    time.sleep(0.05)
+    self.horizontal_servo_pwm.ChangeDutyCycle(0)
     return angle
 
   def set_vertical_angle(self, angle):
     angle = min(max(-25, angle), 20)
     self.vertical_servo_pwm.ChangeDutyCycle(convert_angle_to_duty_cycle(angle))
+    time.sleep(0.05)
+    self.vertical_servo_pwm.ChangeDutyCycle(0)
     return angle
 
   def set_linear_acuator_direction(self, direction):

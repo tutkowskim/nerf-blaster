@@ -9,9 +9,11 @@ import { NerfBlasterService } from '../nerf-blaster.service';
 })
 export class ControlPanelComponent {
   public readonly status$: Observable<string>;
+  public readonly trackingEnabled$: Observable<boolean>;
 
   constructor(private nerfBlasterService: NerfBlasterService) {
     this.status$ = this.nerfBlasterService.fireControllerStatus$;
+    this.trackingEnabled$ = this.nerfBlasterService.trackingEnabled$;
   }
 
   public fire(): void {
@@ -20,29 +22,33 @@ export class ControlPanelComponent {
 
   public onDraggedUp(): void {
     firstValueFrom(this.nerfBlasterService.verticalAngle$).then((angle) => {
-      console.log(angle);
       this.nerfBlasterService.setVerticalAngle(angle + 5);
     });    
   }
   
   public onDraggedDown(): void {
     firstValueFrom(this.nerfBlasterService.verticalAngle$).then((angle) => {
-      console.log(angle);
       this.nerfBlasterService.setVerticalAngle(angle - 5);
     });
   }
   
   public onDraggedLeft(): void {
     firstValueFrom(this.nerfBlasterService.horizotnalAngle$).then((angle) => {
-      console.log(angle);
       this.nerfBlasterService.setHorizontalAngle(angle - 5);
     });  
   }
 
   public onDraggedRight(): void {
     firstValueFrom(this.nerfBlasterService.horizotnalAngle$).then((angle) => {
-      console.log(angle);
       this.nerfBlasterService.setHorizontalAngle(angle + 5);
     });
+  }
+
+  public enableTracking(): void {
+    this.nerfBlasterService.enableTracking();
+  }
+
+  public disableTracking(): void {
+    this.nerfBlasterService.disableTracking();
   }
 }

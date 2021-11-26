@@ -48,7 +48,7 @@ class NerfBlaster:
     threading.Thread(target=self.__fire_controller, args=()).start()
 
     # tracking controller
-    self.tracking_enabled = True
+    self.tracking_enabled = False
     threading.Thread(target=self.__tracking_controller, args=()).start()
 
   def set_horizontal_angle(self, angle):
@@ -117,22 +117,15 @@ class NerfBlaster:
       detectionCenterX = (detection.bounding_box.right + detection.bounding_box.left) / 2.0
       detectionCenterY = (detection.bounding_box.bottom + detection.bounding_box.top) / 2.0
 
-      print(detection.bounding_box)
-      print("Person detected at ({0},{1})".format(detectionCenterX, detectionCenterY))
-
       if (self.camera.FRAME_HEIGHT / 2.0) - 50 > detectionCenterY:
         self.set_vertical_angle(self.vertical_angle - 1)
-        print("shifting down")
       elif (self.camera.FRAME_HEIGHT / 2.0) + 50 < detectionCenterY:
         self.set_vertical_angle(self.vertical_angle + 1)
-        print("shifting up")
 
       if (self.camera.FRAME_WIDTH / 2.0) - 10 > detectionCenterX:
         self.set_horizontal_angle(self.horizontal_angle - 1)
-        print("shifting right")
       elif (self.camera.FRAME_WIDTH / 2.0) + 10 < detectionCenterX:
         self.set_horizontal_angle(self.horizontal_angle + 1)
-        print("shifting left")
 
       last_updated = time.time()
       time.sleep(0.125)

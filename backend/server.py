@@ -30,6 +30,16 @@ def fire_request():
   nerfBlaster.fire()
   return 'fire requested', 200
 
+@app.route("/api/enable_tracking", methods = ['POST'])
+def enable_tracking():
+  nerfBlaster.tracking_enabled = True
+  return 'tracking enabled', 200
+
+@app.route("/api/disable_tracking", methods = ['POST'])
+def disable_tracking():
+  nerfBlaster.tracking_enabled = False
+  return 'tracking disabled', 200
+
 @app.route("/api/image", methods = ['GET'])
 def get_image():
   return nerfBlaster.camera.image, 200, {'Content-Type': 'image/jpeg' }
@@ -50,7 +60,8 @@ def get_status():
         verticalAngle=nerfBlaster.horizontal_angle,
         horizontalAngle=nerfBlaster.horizontal_angle,
         fireControllerStatus=nerfBlaster.fire_controller_status,
-        cameraFps=nerfBlaster.camera.fps
+        cameraFps=nerfBlaster.camera.fps,
+        trackingEnabled=nerfBlaster.tracking_enabled
     )
 
 @app.errorhandler(500)

@@ -1,13 +1,16 @@
 <div class="control-panel">
   <p class="status-text">{{status$ | async}}</p>
-  <app-joystick 
-    (onDraggedUp)="onDraggedUp()"
-    (onDraggedDown)="onDraggedDown()"
-    (onDraggedLeft)="onDraggedLeft()"
-    (onDraggedRight)="onDraggedRight()">
-  </app-joystick>
-  <div class="action-buttons">
-    <button mat-raised-button aria-label="Track" color="accent">Track</button>
-    <button mat-raised-button aria-label="Fire" color="primary" (click)="fire()">Fire</button>
+  <div class="control-panel-controls">
+    <app-joystick 
+      (onDraggedUp)="onDraggedUp()"
+      (onDraggedDown)="onDraggedDown()"
+      (onDraggedLeft)="onDraggedLeft()"
+      (onDraggedRight)="onDraggedRight()">
+    </app-joystick>
+    <div class="action-buttons">
+      <button *ngIf="(trackingEnabled$ | async)" mat-raised-button aria-label="Track" color="accent" (click)="disableTracking()">Disable Tracking</button>
+      <button *ngIf="!(trackingEnabled$ | async)" mat-raised-button aria-label="Track" color="accent" (click)="enableTracking()">Enable Tracking</button>
+      <button mat-raised-button aria-label="Fire" color="primary" (click)="fire()">Fire</button>
+    </div>
   </div>
 </div>

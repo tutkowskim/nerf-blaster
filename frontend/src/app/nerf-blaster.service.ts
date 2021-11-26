@@ -1,31 +1,50 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable, ReplaySubject } from 'rxjs';
+
+interface StatusResult {
+  cameraFps: number
+  fireControllerStatus: string
+  horizontalAngle: number
+  verticalAngle: number
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class NerfBlasterService {
-  // TODO: get initial values from backend
-  private _horizotnalAngle: number = 0;
-  private _verticalAngle: number = 0;
+  private readonly _cameraFps$: ReplaySubject<number> = new ReplaySubject(1);
+  private readonly _horizotnalAngle$: ReplaySubject<number> = new ReplaySubject(1);
+  private readonly _verticalAngle$: ReplaySubject<number> = new ReplaySubject(1);
+  private readonly _fireControllerStatus$: ReplaySubject<string> = new ReplaySubject(1);
 
-  constructor(private http: HttpClient) { }
+  public readonly cameraFps$: Observable<number>
+  public readonly horizotnalAngle$: Observable<number>;
+  public readonly verticalAngle$: Observable<number>;
+  public readonly fireControllerStatus$: Observable<string>;
 
-  public get horizontalAngle(): number {
-    return this._horizotnalAngle;
+  constructor(private http: HttpClient) {
+    this.cameraFps$ = this._cameraFps$.asObservable();
+    this.horizotnalAngle$ = this._horizotnalAngle$.asObservable();
+    this.verticalAngle$ = this._verticalAngle$.asObservable();
+    this.fireControllerStatus$ = this._fireControllerStatus$.asObservable();
+
+    setInterval(() => {
+      firstValueFrom(this.http.get<StatusResult>('/api/status')).then((value) => {
+        this._cameraFps$.next(value.cameraFps);
+        this._fireControllerStatus$.next(value.fireControllerStatus);
+        this._horizotnalAngle$.next(value.horizontalAngle);
+        this._verticalAngle$.next(value.verticalAngle);
+      });
+    }, 500)
   }
 
   public setHorizontalAngle(value: number): void {
-    firstValueFrom(this.http.post<number>('/api/set_horizontal_angle', value)).then((value) => this._horizotnalAngle = value);
-  }
-
-  public get verticalAngle(): number {
-    return this._verticalAngle;
+    firstValueFrom(this.http.post<number>('/api/set_horizontal_angle', value)).then((value) => this._horizotnalAngle$.next(value));
   }
 
   public setVerticalAngle(value: number): void {
-    firstValueFrom(this.http.post<number>('/api/set_vertical_angle', value)).then((value) => this._verticalAngle = value);
+    firstValueFrom(this.http.post<number>('/api/set_vertical_angle', value)).then((value) => this._verticalAngle$.next(value));
   }
 
   public fire(): void {

@@ -1,5 +1,5 @@
 <div class="control-panel">
-  <p class="status-text">Ready</p>
+  <p class="status-text">{{status$ | async}}</p>
   <app-joystick 
     (onDraggedUp)="onDraggedUp()"
     (onDraggedDown)="onDraggedDown()"

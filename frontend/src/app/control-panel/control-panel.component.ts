@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { firstValueFrom, Observable } from 'rxjs';
 import { NerfBlasterService } from '../nerf-blaster.service';
 
 @Component({
@@ -7,25 +8,41 @@ import { NerfBlasterService } from '../nerf-blaster.service';
   styleUrls: ['./control-panel.component.scss']
 })
 export class ControlPanelComponent {
-  constructor(private nerfBlasterService: NerfBlasterService) { }
+  public readonly status$: Observable<string>;
+
+  constructor(private nerfBlasterService: NerfBlasterService) {
+    this.status$ = this.nerfBlasterService.fireControllerStatus$;
+  }
 
   public fire(): void {
     this.nerfBlasterService.fire();
   }
 
   public onDraggedUp(): void {
-    this.nerfBlasterService.setVerticalAngle(this.nerfBlasterService.verticalAngle + 5);
+    firstValueFrom(this.nerfBlasterService.verticalAngle$).then((angle) => {
+      console.log(angle);
+      this.nerfBlasterService.setVerticalAngle(angle + 5);
+    });    
   }
   
   public onDraggedDown(): void {
-    this.nerfBlasterService.setVerticalAngle(this.nerfBlasterService.verticalAngle - 5);
+    firstValueFrom(this.nerfBlasterService.verticalAngle$).then((angle) => {
+      console.log(angle);
+      this.nerfBlasterService.setVerticalAngle(angle - 5);
+    });
   }
   
-  public onDraggedLeft(): void {    
-    this.nerfBlasterService.setHorizontalAngle(this.nerfBlasterService.horizontalAngle - 5);
+  public onDraggedLeft(): void {
+    firstValueFrom(this.nerfBlasterService.horizotnalAngle$).then((angle) => {
+      console.log(angle);
+      this.nerfBlasterService.setHorizontalAngle(angle - 5);
+    });  
   }
 
   public onDraggedRight(): void {
-    this.nerfBlasterService.setHorizontalAngle(this.nerfBlasterService.horizontalAngle + 5);
+    firstValueFrom(this.nerfBlasterService.horizotnalAngle$).then((angle) => {
+      console.log(angle);
+      this.nerfBlasterService.setHorizontalAngle(angle + 5);
+    });
   }
 }

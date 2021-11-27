@@ -1,6 +1,11 @@
+import argparse
 from flask import (Flask, stream_with_context, send_from_directory, Response, request, jsonify)
 from time import sleep
 from nerfblaster import NerfBlaster
+
+parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser.add_argument('--port', required=False, type=int, default=8080)
+args = parser.parse_args()
 
 app = Flask(__name__)
 nerfBlaster = NerfBlaster()
@@ -69,4 +74,4 @@ def server_error(e):
   return 'An internal error occurred [main.py] %s' % e, 500
 
 if __name__ == '__main__':
-  app.run(host='0.0.0.0', port=8080, debug=True, use_reloader=False)
+  app.run(host='0.0.0.0', port=args.port, debug=True, use_reloader=False)

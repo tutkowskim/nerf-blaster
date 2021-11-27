@@ -2,5 +2,5 @@
 ## edit /etc/rc.local and have it call this file.
 ## i.e. "./start.sh &"
 
-cd ../backend;
+cd ./backend;
 python3 server.py;

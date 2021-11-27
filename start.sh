@@ -13,4 +13,4 @@ npm run build -- --prod
 
 # Start server
 cd ../backend;
-python3 server.python3
+python3 server.py

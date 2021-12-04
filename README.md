@@ -1,7 +1,7 @@
 # nerf-blaster
 This project remotely controls a nerf blaster using two servos to aim the device, a linear actuator to fire the device, and the pi-camera and tensorflow libraries to perform image tracking.
 
-<div style="display: flex; gap: 1rem;">
+<div style="display: flex; gap: 1rem; justify-content: center;">
   <img src="images/Device.jpeg" height="403.2" width="302.4">
   <img src="images/Website.PNG" height="403.2" width="187">
 </div>
